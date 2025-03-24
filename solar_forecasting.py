@@ -14,7 +14,7 @@ df = df.rename(columns=lambda x: x.strip())  # Removing extra spaces from column
 
 # Selecting features and target variable
 features = ['Year', 'Month', 'Day', 'Hour', 'Temperature Units', 'Pressure Units', 'Relative Humidity Units', 'Wind Speed Units']
-target = 'Sloar Power'  # Assuming this is the target variable
+target = 'Solar Power'  # Assuming this is the target variable
 
 # Drop any rows with missing values
 df = df[features + [target]].dropna()
