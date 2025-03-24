@@ -31,29 +31,25 @@ def prepare_features(df):
     features = ["Temperature Units", "Pressure Units", "Relative Humidity Units", "Wind Speed Units"]
     target = "Solar Power"
     required_columns = features + [target]
-    missing_features = [col for col in required_columns if col not in df.columns]
     
-    if missing_features:
-        print("❌ Missing columns:", missing_features)
-        return None, None
-    else:
-        print("✅ All columns are correct!")
-        
-    # Ensure only numeric columns are used
-    df_numeric = df[required_columns].select_dtypes(include=['int64', 'float64'])
+    # Attempt to convert columns to numeric
+    for col in required_columns:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+    
+    # Drop rows with missing values
+    df = df.dropna(subset=required_columns)
     
     # Check if any columns were excluded due to non-numeric data
-    excluded_columns = set(required_columns) - set(df_numeric.columns)
+    excluded_columns = [col for col in required_columns if df[col].dtype not in ['int64', 'float64']]
     if excluded_columns:
         print("❌ Excluded columns due to non-numeric data:", excluded_columns)
-    
-    # Drop any rows with missing values
-    df_filtered = df_numeric.dropna()
+        return None, None
     
     print("✅ Dataframe successfully filtered with required columns!")
     
-    X = df_filtered[features]
-    y = df_filtered[target]
+    X = df[features]
+    y = df[target]
     return X, y
 
 def train_model(X, y):
