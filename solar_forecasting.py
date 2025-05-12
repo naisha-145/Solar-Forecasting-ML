@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 def load_data(file_path):
     """Load dataset from Excel file."""
@@ -53,7 +53,7 @@ def prepare_features(df):
     return X, y
 
 def train_model(X, y):
-    """Train a Random Forest Regressor model."""
+    """Train a Random Forest Regressor model and calculate regression metrics."""
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     model = RandomForestRegressor()
@@ -62,7 +62,14 @@ def train_model(X, y):
     y_pred = model.predict(X_test)
     
     mse = mean_squared_error(y_test, y_pred)
-    print(f"Model MSE: {mse}")
+    mae = mean_absolute_error(y_test, y_pred)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_test, y_pred)
+    
+    print(f"Model MSE: {mse:.4f}")
+    print(f"Model MAE: {mae:.4f}")
+    print(f"Model RMSE: {rmse:.4f}")
+    print(f"Model R^2 (Coefficient of Determination): {r2:.4f}")
     
     return model
 
